@@ -1,0 +1,13 @@
+version: '2.1'
+
+services:
+  storage-tunnel:
+    image: storage-tunnel
+    build: .
+    environment:
+      NODE_ENV: development
+      SERVER_ROOT: .
+    ports:
+      - 3000:3000
+      - 9229:9229
+    command: node --inspect=0.0.0.0:9229 src/index.js
