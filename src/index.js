@@ -4,18 +4,23 @@ const assert = require('assert');
 const fastify = require('fastify')({ logger: true });
 
 const { SERVER_ROOT } = process.env;
+const { NGROK_AUTH_TOKEN } = process.env;
 const PORT = 5730;
 
 assert(SERVER_ROOT && SERVER_ROOT.length, 'process.env.SERVER_ROOT');
+assert(
+    NGROK_AUTH_TOKEN && NGROK_AUTH_TOKEN.length,
+    'process.env.NGROK_AUTH_TOKEN'
+);
 
-const tunnel = new Tunnel({ port: PORT });
+const tunnel = new Tunnel({ port: PORT, authToken: NGROK_AUTH_TOKEN });
 const staticServer = new StaticServer({ root: SERVER_ROOT, port: PORT });
 
 staticServer.start();
 
 // Declare a route
 fastify.get('/', async (request, reply) => {
-    return { hello: 'world' };
+    return { status: 'ok' };
 });
 
 fastify.route({

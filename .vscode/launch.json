@@ -6,6 +6,12 @@
     "configurations": [
         {
             "type": "node",
+            "request": "attach",
+            "name": "Docker: Attach to Node",
+            "remoteRoot": "/usr/src/app"
+        },
+        {
+            "type": "node",
             "request": "launch",
             "name": "Launch Program",
             "skipFiles": [
@@ -13,9 +19,7 @@
             ],
             "program": "${workspaceFolder}/src/index.js",
             "console": "integratedTerminal",
-            "env": {
-                "SERVER_ROOT": "${workspaceFolder}/example-content"
-            }
+            "envFile": "${workspaceFolder}/.env"
         },
         {
             "name": "Docker Node.js Launch and Attach",

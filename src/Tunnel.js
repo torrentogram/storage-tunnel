@@ -1,17 +1,16 @@
-const handler = require('serve-handler');
-const http = require('http');
-const localtunnel = require('localtunnel');
+const ngrok = require('ngrok');
 
 class Tunnel {
     /**
      * @param {{port:string}} options
      */
-    constructor({ port }) {
+    constructor({ port, authToken }) {
         this.port = port;
+        this.authToken = authToken;
+
         this.isRunning = false;
         this.url = null;
         this.startedAt = null;
-        this.tunnel = null;
     }
     get isRunning() {
         return this._isRunning;
@@ -20,7 +19,6 @@ class Tunnel {
         this._isRunning = !!v;
         if (!v) {
             this.url = null;
-            this.tunnel = null;
             this.startedAt = null;
         }
     }
@@ -29,24 +27,29 @@ class Tunnel {
             return;
         }
         try {
-            this.tunnel = await localtunnel(this.port);
+            const url = await ngrok.connect({
+                authtoken: this.authToken,
+                port: this.port,
+                onStatusChange: status => {
+                    if (status === 'closed') {
+                        console.log('Connection closed');
+                        this.isRunning = true;
+                    }
+                }
+            });
 
+            this.url = url;
             this.isRunning = true;
-            this.url = this.tunnel.url;
             this.startedAt = Date.now();
             console.log(`Tunnel started on ${this.url}`);
-
-            this.tunnel.on('close', () => {
-                console.log('Tunnel closed');
-                this.isRunning = false;
-            });
         } catch (e) {
             this.isRunning = false;
         }
     }
     async stop() {
         if (this.isRunning) {
-            this.tunnel.close();
+            await ngrok.disconnect();
+            this.isRunning = false;
         }
     }
     toJSON() {

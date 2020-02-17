@@ -2,11 +2,12 @@ version: '2.1'
 
 services:
   storage-tunnel:
-    image: storage-tunnel
+    image: storage-tunnel-debug
     build: .
     environment:
       NODE_ENV: development
       SERVER_ROOT: .
+      DEBUG: "localtunnel:*"
     ports:
       - 3000:3000
       - 9229:9229
