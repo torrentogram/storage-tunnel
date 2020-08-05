@@ -11,7 +11,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "fastify": "^2.12.0",
+    "fastify": "^2.15.1",
     "localtunnel": "^2.0.0",
     "ngrok": "^3.2.7",
     "serve-handler": "^6.1.2"
